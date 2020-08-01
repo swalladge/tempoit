@@ -1,4 +1,4 @@
-# Tempoit &emsp; ![Crates.io](https://img.shields.io/crates/v/tempoit)
+# Tempoit &emsp; [![Crates.io](https://img.shields.io/crates/v/tempoit)](https://crates.io/crates/tempoit)
 
 Simple timewarrior to tempo/jira worklog uploader.
 
