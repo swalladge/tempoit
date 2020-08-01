@@ -1,6 +1,6 @@
 # Tempoit
 
-A worklog uploader for Tempo in Jira.
+Simple timewarrior to tempo/jira worklog uploader.
 
 Copyright © 2020 Samuel Walladge
 
@@ -14,7 +14,8 @@ uploads them, and marks them as uploaded in timewarrior by modifying the tags.
 
 ## Usage
 
-TODO: installation instructions
+Install from crates: `cargo install tempoit`, or clone this repository and `cargo run` or `cargo build`.
+You should have a recent stable rust toolchain installed.
 
 On first run, `~/.config/tempoit/tempoit.toml` (or equivalent default path for your system) will be created.
 

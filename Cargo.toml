@@ -1,7 +1,13 @@
 [package]
 name = "tempoit"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Samuel Walladge <samuel@swalladge.net>"]
+description = "Simple timewarrior to tempo/jira worklog uploader."
+readme = "README.md"
+keywords = ["cli", "timewarrior", "jira", "tempo"]
+repository = "https://github.com/swalladge/tempoit/"
+categories = ["command-line-utilities"]
+license = "MIT OR Apache-2.0"
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
