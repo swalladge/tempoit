@@ -12,7 +12,7 @@ I track time locally using timewarrior, using tags to mark logs for work that re
 This tool filters and parses the timewarrior logs, converts them to tempo-compatible worklogs,
 uploads them, and marks them as uploaded in timewarrior by modifying the tags.
 
-## Usage
+## Installation
 
 Install from crates: `cargo install tempoit`, or clone this repository and `cargo run` or `cargo build`.
 You should have a recent stable rust toolchain installed.
@@ -29,7 +29,35 @@ password = 'my_password'
 base_url = 'https://tasks.opencraft.com'
 ```
 
-Then run `tempoit`. For example:
+## Usage
+
+### Logging Work
+
+In order to be able to upload your worklog, each timewarrior entry has to have:
+- [Tags](https://github.com/swalladge/tempoit/blob/3a6da202d0f4d6d4e204d3d416a245cbf1dfb45a/src/timew.rs#L136):
+  - `log`
+  - `oc`
+
+- Annotation
+
+Therefore, the required format is:
+```
+timew start [Jira Ticket]
+
+timew tag @id log oc
+timew annotate @id "Some annotation"
+```
+
+Here's an example:
+```
+timew start log oc SE-3197
+
+timew annotate "Setting up Tempoit to log work"
+```
+
+### Uploading Worklog
+
+Run `tempoit` to upload your time logs to tempo/jira worklog. For example:
 
 ```
 ❯ tempoit
@@ -42,7 +70,10 @@ Then run `tempoit`. For example:
 
 It will print the worklogs it will upload, ask for confirmation.
 On confirmation, it will upload the worklogs and mark them as logged locally in timewarrior.
-See source code for the tags used with timewarrior.
+
+> In case your timew entries don't show up when you run `tempoit`, then you would have probably have forgotten to enter one of the neceessary tags that need to be used with timewarrior.
+> 
+> [See source code for the tags used with timewarrior.](https://github.com/swalladge/tempoit/blob/3a6da202d0f4d6d4e204d3d416a245cbf1dfb45a/src/timew.rs#L136)
 
 ## Dev
 
