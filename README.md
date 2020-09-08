@@ -34,7 +34,7 @@ base_url = 'https://tasks.opencraft.com'
 ### Logging Work
 
 In order to be able to upload your worklog, each timewarrior entry has to have:
-- [Tags](https://github.com/swalladge/tempoit/blob/3a6da202d0f4d6d4e204d3d416a245cbf1dfb45a/src/timew.rs#L136):
+- [Tags](src/timew.rs#L136):
   - `log`
   - `oc`
 
@@ -42,10 +42,12 @@ In order to be able to upload your worklog, each timewarrior entry has to have:
 
 Therefore, the required format is:
 ```
-timew start [Jira Ticket]
+timew start log oc <Jira ticket>
+timew ann "Some annotation"
 
-timew tag @id log oc
-timew annotate @id "Some annotation"
+# or tags can be added later while timer running
+timew start log oc
+timew tag <Jira ticket>
 ```
 
 Here's an example:
@@ -68,12 +70,16 @@ Run `tempoit` to upload your time logs to tempo/jira worklog. For example:
 :: Confirm upload [y/N]
 ```
 
-It will print the worklogs it will upload, ask for confirmation.
+It will print the worklogs it will upload, asking for confirmation.
 On confirmation, it will upload the worklogs and mark them as logged locally in timewarrior.
 
 > In case your timew entries don't show up when you run `tempoit`, then you would have probably have forgotten to enter one of the neceessary tags that need to be used with timewarrior.
-> 
-> [See source code for the tags used with timewarrior.](https://github.com/swalladge/tempoit/blob/3a6da202d0f4d6d4e204d3d416a245cbf1dfb45a/src/timew.rs#L136)
+>
+> [See source code for the tags used with timewarrior in `src/timew.rs`.](src/timew.rs#L136)
+>
+> The source code can be changed if different tags are what you need or desire
+>
+> Pull requests are accepted and encouraged, especially if you would like to make tags configurable via the config file
 
 ## Dev
 
