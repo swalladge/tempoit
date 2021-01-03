@@ -2,17 +2,36 @@ use std::io::{stdin, stdout, Write};
 
 use chrono::Duration;
 use confy;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use structopt::StructOpt;
+use regex::Regex;
 
 use tempoit::jira::{duration_to_jira, JiraClient};
 use tempoit::timew::TimewClient;
+
+fn deserialize_regex<'de, D>(deserializer: D) -> Result<Regex, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let regex_str = String::deserialize(deserializer)?;
+    Regex::new(&regex_str).map_err(serde::de::Error::custom)
+}
+
+fn serialize_regex<S>(re: &Regex, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    serializer.serialize_str(re.as_str())
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 struct Config {
     username: String,
     password: String,
     base_url: String,
+    #[serde(deserialize_with = "deserialize_regex")]
+    #[serde(serialize_with = "serialize_regex")]
+    ticket_regex: Regex,
 }
 
 impl Default for Config {
@@ -21,6 +40,7 @@ impl Default for Config {
             username: "user".to_owned(),
             password: "pass".to_owned(),
             base_url: "https://tasks.opencraft.com".to_owned(),
+            ticket_regex: Regex::new(r"^(?i:FAL|SE|BB|OC|MNG|BIZ|ADMIN)-\d+$").expect("default regex is invalid"),
         }
     }
 }
@@ -33,7 +53,7 @@ struct Opt {}
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _opt = Opt::from_args();
     let cfg: Config = confy::load("tempoit")?;
-    let logs_client = TimewClient::new();
+    let logs_client = TimewClient::new(cfg.ticket_regex);
 
     let parsed_intervals = logs_client.get_worklogs()?;
 

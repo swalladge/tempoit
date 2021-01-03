@@ -27,6 +27,8 @@ username = 'my_username'
 password = 'my_password'
 # base url of the jira instance
 base_url = 'https://tasks.opencraft.com'
+# be careful with backslashes; use single quoted string to avoid needing double backslashes in reex
+ticket_regex = '^(?i:SE|BB|OC|MNG|BIZ|ADMIN)-\d+$'
 ```
 
 ## Usage

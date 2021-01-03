@@ -83,7 +83,7 @@ impl fmt::Display for Interval {
     }
 }
 
-fn parse_interval(interval: &Interval) -> Result<Worklog, String> {
+fn parse_interval(ticket_regex: &Regex, interval: &Interval) -> Result<Worklog, String> {
     let end = match interval.end {
         Some(end) => end,
         None => {
@@ -94,9 +94,7 @@ fn parse_interval(interval: &Interval) -> Result<Worklog, String> {
     let duration = end - interval.start;
     let date = end.with_timezone(&Local).date().naive_local();
 
-    // TODO:  make this regex configurable from config file
-    let re = Regex::new(r"^(?i:SE|BB|OC|MNG|BIZ|ADMIN)-\d+$").expect("regex invalid");
-    let issue = match interval.tags.iter().find(|x| re.is_match(x)) {
+    let issue = match interval.tags.iter().find(|x| ticket_regex.is_match(x)) {
         Some(issue) => issue.to_uppercase(),
         None => {
             return Err(format!("ERR( untagged ): {}", interval));
@@ -123,11 +121,15 @@ fn parse_interval(interval: &Interval) -> Result<Worklog, String> {
 
 type ClientResult<T> = Result<T, Box<dyn Error>>;
 
-pub struct TimewClient {}
+pub struct TimewClient {
+    ticket_regex: Regex,
+}
 
 impl TimewClient {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(ticket_regex: Regex) -> Self {
+        Self {
+            ticket_regex,
+        }
     }
 
     pub fn get_worklogs(&self) -> ClientResult<Vec<Result<Worklog, String>>> {
@@ -138,7 +140,7 @@ impl TimewClient {
         let export_contents = str::from_utf8(&proc.stdout)?;
         let intervals: Vec<Interval> = serde_json::from_str(export_contents)?;
 
-        Ok(intervals.iter().map(parse_interval).collect())
+        Ok(intervals.iter().map(|x| parse_interval(&self.ticket_regex, x)).collect())
     }
 
     pub fn record_success(&self, id: &str) -> ClientResult<()> {

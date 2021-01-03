@@ -1,6 +1,6 @@
 [package]
 name = "tempoit"
-version = "1.0.0"
+version = "2.0.0"
 authors = ["Samuel Walladge <samuel@swalladge.net>"]
 description = "Simple timewarrior to tempo/jira worklog uploader."
 readme = "README.md"
